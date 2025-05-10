@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Request, Response
+
+from auth_jwt.decorators import login_required
 from config import init_db_connect
 from dto import NewUserDto, LoginUserDto
 from general_services.login_svc import LoginSvc
@@ -23,4 +25,11 @@ async def register(request: Request, data: NewUserDto):
 async def register(request: Request, data: LoginUserDto):
     login_svc = LoginSvc()
     json_resp = await login_svc.login(data.username, data.password)
+    return json_resp
+
+@app.post("/logout")
+@login_required
+async def register(request: Request):
+    login_svc = LoginSvc()
+    json_resp = await login_svc.logout(request, "/login")
     return json_resp
