@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Response
 from config import init_db_connect
-from dto import NewUserDto
+from dto import NewUserDto, LoginUserDto
+from general_services.login_svc import LoginSvc
 from models import User
 
 app = FastAPI()
@@ -17,3 +18,9 @@ async def register(request: Request, data: NewUserDto):
     user.set_password(data.password)
     await user.save()
     return Response(content=f"New user has been registered")
+
+@app.post("/login")
+async def register(request: Request, data: LoginUserDto):
+    login_svc = LoginSvc()
+    json_resp = await login_svc.login(data.username, data.password)
+    return json_resp
