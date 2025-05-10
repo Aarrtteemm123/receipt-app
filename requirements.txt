@@ -1,0 +1,11 @@
+fastapi==0.114.1
+uvicorn==0.30.6
+passlib[bcrypt]==1.7.4
+bcrypt==3.2.2
+pyjwt==2.9.0
+python-dotenv==1.0.1
+pycryptodome==3.21.0
+redis==5.2.0
+tortoise-orm[asyncpg]==0.21.7
+asyncpg==0.30.0
+aerich==0.7.2

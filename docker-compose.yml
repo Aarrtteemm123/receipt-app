@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis_app
+      - postgres_db
+    networks:
+      - dev_network
+    container_name: "app"
+
+  # Redis для основного приложения и админки
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"  # Порт для Redis основного приложения и админки
+    networks:
+      - dev_network
+    container_name: "redis"
+
+  postgres:
+    image: postgres:17
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../PostgresSql:/var/lib/postgresql/data
+    networks:
+      - dev_network
+    container_name: "postgres"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    env_file:
+      - .env
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres_db
+    networks:
+      - dev_network
+    container_name: "pgadmin"
+
+networks:
+  dev_network:
+    driver: bridge
