@@ -1,13 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from config import init_db_connect
 
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/healthcheck")
+async def healthcheck(request: Request):
+    await init_db_connect()
+    return {"status": "app server is running, db connection ok..."}

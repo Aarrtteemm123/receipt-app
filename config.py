@@ -43,13 +43,3 @@ async def init_db_connect():
     result = await Tortoise.get_connection("default").execute_query("SELECT 1")
     logging.info(f"Test query result: {result and result[1][0]['?column?'] == 1}")
     logging.info("Connected to the database")
-
-
-def run_async(func):
-    if not asyncio.get_event_loop().is_running():
-        asyncio.run(func)
-    else:
-        asyncio.create_task(func)
-
-
-run_async(init_db_connect())
