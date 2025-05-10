@@ -1,0 +1,50 @@
+# 📦 Requirements
+
+* 🐳 **Docker** v27.3.1
+* 🐙 **Docker Compose** v2.29.7
+* 🔧 **Git** v2.34.1
+* 🛠️ **GNU Make** 4.3
+
+---
+
+# 🚀 Installation Guide
+
+### 1. Create project directory
+
+```bash
+mkdir receipt && cd receipt
+```
+
+### 2. Clone repositories
+
+```bash
+git clone https://github.com/receipt-app.git
+```
+
+### 3. Prepare environment
+
+```bash
+cd check-app
+cp .env-example .env
+```
+
+### 4. Initialize project
+
+```bash
+make create
+```
+
+### 🔐 Access URLs
+
+* **App**: [http://localhost:8000/](http://localhost:8000/)
+
+---
+
+# 🐳 Docker Services Overview
+
+| 🚢 **Service** | 🌐 **Host** | 📍 **Port** | 📝 **Description**        |
+|----------------| ----------- | ----------- |---------------------------|
+| `app`          | localhost   | `8000`      | Main application.         |
+| `redis`        | localhost   | `6379`      | Redis instance for app.   |
+| `postgres`     | localhost   | `5432`      | PostgreSQL database.      |
+| `pgadmin`      | localhost   | `8080`      | PostgreSQL GUI interface. |
