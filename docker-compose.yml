@@ -10,8 +10,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis_app
-      - postgres_db
+      - redis
+      - postgres
     networks:
       - dev_network
     container_name: "app"
@@ -44,7 +44,7 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - postgres_db
+      - postgres
     networks:
       - dev_network
     container_name: "pgadmin"

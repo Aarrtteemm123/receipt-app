@@ -36,7 +36,8 @@ make create
 
 ### 🔐 Access URLs
 
-* **App**: [http://localhost:8000/](http://localhost:8000/)
+* **App**: [http://localhost:8000/healthcheck](http://localhost:8000/healthcheck)
+* **Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
