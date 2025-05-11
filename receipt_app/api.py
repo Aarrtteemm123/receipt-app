@@ -1,5 +1,7 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import List, Optional
+from fastapi.responses import PlainTextResponse
 
 from fastapi import Request, HTTPException, Query
 from tortoise.expressions import Q
@@ -140,3 +142,46 @@ class ReceiptApi:
             )
 
         return result
+
+    async def get_receipt_text(
+            self,
+            request: Request,
+            receipt_id: int,
+            line_width: int = Query(32, ge=20, le=100)
+    ) -> str:
+        receipt = await Receipt.get_or_none(id=receipt_id).prefetch_related("products", "payment_type")
+        if not receipt:
+            raise HTTPException(status_code=404, detail="Receipt not found")
+
+        def format_line(text: str, align: str = "left") -> str:
+            if align == "center":
+                return text.center(line_width)
+            elif align == "right":
+                return text.rjust(line_width)
+            return text.ljust(line_width)
+
+        def format_money(value: Decimal) -> str:
+            return f"{value:,.2f}".replace(",", " ")
+
+        lines = []
+        lines.append(format_line("ФОП Джонсонюк Борис", "center"))
+        lines.append("=" * line_width)
+
+        total = Decimal("0.00")
+        for p in receipt.products:
+            subtotal = Decimal(p.price * p.quantity)
+            total += subtotal
+            lines.append(f"{p.quantity:.2f} x {format_money(p.price)}")
+            lines.append(format_line(p.name, "left") + format_money(subtotal).rjust(line_width - len(p.name)))
+            lines.append("-" * line_width)
+
+        lines.append("=" * line_width)
+        lines.append(format_line("СУМА" + format_money(total).rjust(line_width - 4)))
+        lines.append(format_line(receipt.payment_type.name.capitalize() + format_money(total).rjust(line_width - len(receipt.payment_type.name))))
+        rest = Decimal(receipt.amount) - total
+        lines.append(format_line("Решта" + format_money(rest).rjust(line_width - 5)))
+        lines.append("=" * line_width)
+        lines.append(format_line(receipt.created_at.strftime("%d.%m.%Y %H:%M"), "center"))
+        lines.append(format_line("Дякуємо за покупку!", "center"))
+
+        return PlainTextResponse(content="\n".join(lines))
