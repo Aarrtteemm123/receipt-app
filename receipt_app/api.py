@@ -1,6 +1,8 @@
-from decimal import Decimal
+from datetime import datetime
+from typing import List, Optional
 
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Query
+from tortoise.expressions import Q
 from tortoise.transactions import in_transaction
 
 from auth_jwt.decorators import login_required
@@ -25,7 +27,7 @@ class ReceiptApi:
         ]
 
         payment_type = await PaymentType.get(name=data.payment.type)
-        receipt = Receipt(user=user, amount=data.payment.amount, payment_type=payment_type)
+        receipt = Receipt(user=user, amount=data.payment.amount, total=total, payment_type=payment_type)
 
         async with in_transaction() as connection:
             await receipt.save(using_db=connection)
@@ -64,10 +66,10 @@ class ReceiptApi:
                 quantity=p.quantity,
                 total=round(p.price * p.quantity, 2)
             )
-            for p in receipt.products   # related name in the model Product
+            for p in receipt.products  # related name in the model Product
         ]
-        total = sum(p.total for p in products)
-        rest = max(Decimal(receipt.amount) - total, Decimal("0"))
+        total = receipt.total
+        rest = max(receipt.amount - total, 0)
 
         return ReceiptResponse(
             id=receipt.id,
@@ -80,3 +82,61 @@ class ReceiptApi:
             rest=round(rest, 2),
             created_at=receipt.created_at
         )
+
+    @login_required
+    async def get_receipts(
+            self,
+            request: Request,
+            date_from: Optional[datetime] = Query(None),
+            date_to: Optional[datetime] = Query(None),
+            min_total: Optional[float] = Query(None),
+            payment_type: Optional[str] = Query(None),
+            offset: int = Query(0, ge=0),
+            limit: int = Query(10, le=100),
+    ) -> List[ReceiptResponse]:
+        user = request.state.user
+        filters = Q(user=user)
+
+        if date_from:
+            filters &= Q(created_at__gte=date_from)
+        if date_to:
+            filters &= Q(created_at__lte=date_to)
+        if min_total is not None:
+            filters &= Q(total__gte=min_total)
+        if payment_type:
+            filters &= Q(payment_type__name=payment_type)
+
+        receipts = await Receipt.filter(
+            filters
+        ).prefetch_related(
+            "payment_type", "products"
+        ).offset(offset).limit(limit)
+
+        result = []
+        for receipt in receipts:
+            products = [
+                ProductOutput(
+                    name=p.name,
+                    price=p.price,
+                    quantity=p.quantity,
+                    total=round(p.price * p.quantity, 2)
+                )
+                for p in receipt.products
+            ]
+            total_sum = receipt.total
+            rest = max(receipt.amount - total_sum, 0)
+            result.append(
+                ReceiptResponse(
+                    id=receipt.id,
+                    products=products,
+                    payment=PaymentOutput(
+                        type=receipt.payment_type.name,
+                        amount=total_sum
+                    ),
+                    total=round(total_sum, 2),
+                    rest=rest,
+                    created_at=receipt.created_at
+                )
+            )
+
+        return result

@@ -7,6 +7,7 @@ class Receipt(Model):
     user = fields.ForeignKeyField("models.User", related_name="receipts")
     payment_type = fields.ForeignKeyField("models.PaymentType", related_name="receipts")
     amount = fields.FloatField()
+    total = fields.FloatField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
     class Meta:
