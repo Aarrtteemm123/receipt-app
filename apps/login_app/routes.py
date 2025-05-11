@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from auth_jwt.dto import TokenDto
-from login_app.api import LoginApi
+from apps.login_app.api import LoginApi
 
 api_router = APIRouter()
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from login_app.routes import api_router as login_api_routes
-from receipt_app.routes import api_router as receipt_api_routes
+from apps.login_app.routes import api_router as login_api_routes
+from apps.receipt_app.routes import api_router as receipt_api_routes
 
 api_router = APIRouter()
 

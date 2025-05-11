@@ -7,7 +7,7 @@ from tortoise.transactions import in_transaction
 
 from auth_jwt.decorators import login_required
 from models import Receipt, PaymentType, Product
-from receipt_app.dto import ReceiptResponse, ReceiptRequest, ProductOutput, PaymentOutput
+from apps.receipt_app.dto import ReceiptResponse, ReceiptRequest, ProductOutput, PaymentOutput
 
 
 class ReceiptApi:

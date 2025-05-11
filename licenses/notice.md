@@ -61,5 +61,5 @@
 
 
 ### License
-See the [licenses](./licenses) directory for details.
+See the [licenses]() directory for details.
 

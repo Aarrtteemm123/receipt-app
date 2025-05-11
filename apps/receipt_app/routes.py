@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from receipt_app.api import ReceiptApi
+from apps.receipt_app.api import ReceiptApi
 from fastapi.responses import PlainTextResponse
 
 api_router = APIRouter()
