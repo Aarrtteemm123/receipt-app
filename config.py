@@ -45,11 +45,11 @@ async def init_db_connect():
     logging.info("Connected to the database")
 
 
-def run_async(func):
-    if not asyncio.get_event_loop().is_running():
-        asyncio.run(func)
-    else:
-        asyncio.create_task(func)
-
-
-run_async(init_db_connect())
+# def run_async(func):
+#     if not asyncio.get_event_loop().is_running():
+#         asyncio.run(func)
+#     else:
+#         asyncio.create_task(func)
+#
+#
+# run_async(init_db_connect())

@@ -98,6 +98,9 @@ heads: ## show head migration
 init-enums: ## create records in db by enums
 	docker exec -it app python scripts/init_enums.py
 
+run-tests:
+	docker exec -e PYTHONPATH=/app -it app pytest
+
 create: ## build infrastructure on first run app
 	make rebuild
 	make clear-db

@@ -60,6 +60,17 @@
 - **Authors:** long2ice
 
 
+- **Library name:** pytest
+- **Version:** 8.3.5
+- **License:** MIT
+- **Authors:**  Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others
+
+
+- **Library name:** httpx
+- **Version:** 0.28.1
+- **License:** BSD-3-Clause
+- **Authors:** Tom Christie <tom@tomchristie.com>
+
 ### License
 See the [licenses]() directory for details.
 

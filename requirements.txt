@@ -9,3 +9,6 @@ redis==5.2.0
 tortoise-orm[asyncpg]==0.21.7
 asyncpg==0.30.0
 aerich==0.7.2
+pytest==8.3.5
+httpx==0.28.1
+pytest-asyncio==0.26.0
