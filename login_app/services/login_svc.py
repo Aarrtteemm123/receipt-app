@@ -3,7 +3,9 @@ import os
 
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse, RedirectResponse
+from starlette.requests import Request
 
+from auth_jwt.decorators import login_required
 from auth_jwt.services.token_svc import TokenSvc
 from config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -114,7 +116,7 @@ class LoginSvc:
         # Return the access token in the response body
         return response
 
-    async def logout(self, request, redirect_route):
+    async def logout(self, request: Request, redirect_route):
         user = request.state.user
         response = RedirectResponse(url=redirect_route)
         response.delete_cookie("refresh_token")

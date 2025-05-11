@@ -13,13 +13,13 @@ def login_required(func):
         request: Request = kwargs.get("request")
         token_data = await get_current_user(request)
         if not token_data:
-            return RedirectResponse(url="/login")
+            return RedirectResponse(url="/api/login")
 
         request.state.user = await User.get(id=token_data.user_id)
         if not request.state.user.is_active:
             redis_svc = RedisSvc()
             redis_svc.delete(request.state.user.id)
-            return RedirectResponse(url="/login")
+            return RedirectResponse(url="/api/login")
 
         return await func(*args, **kwargs)
 
