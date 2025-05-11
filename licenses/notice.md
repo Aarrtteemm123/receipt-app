@@ -71,6 +71,12 @@
 - **License:** BSD-3-Clause
 - **Authors:** Tom Christie <tom@tomchristie.com>
 
+
+- **Library name:** pytest-asyncio
+- **Version:** 0.26.0
+- **License:** Apache-2.0
+- **Authors:** "Tin Tvrtković <tinchester@gmail.com>" <tinchester@gmail.com>
+
 ### License
 See the [licenses]() directory for details.
 
