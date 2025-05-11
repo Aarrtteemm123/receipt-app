@@ -1,6 +1,6 @@
 from fastapi.security import OAuth2PasswordBearer
 from auth_jwt.dto import TokenDataDto
-from auth_jwt.token_svc import TokenSvc
+from auth_jwt.services.token_svc import TokenSvc
 from enums import TokenTypeEnum
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth", auto_error=False)

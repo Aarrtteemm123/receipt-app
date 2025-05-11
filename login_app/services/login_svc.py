@@ -4,7 +4,7 @@ import os
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse, RedirectResponse
 
-from auth_jwt.token_svc import TokenSvc
+from auth_jwt.services.token_svc import TokenSvc
 from config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     REFRESH_TOKEN_EXPIRE_DAYS,

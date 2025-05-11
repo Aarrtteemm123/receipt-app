@@ -1,7 +1,7 @@
 from fastapi import Depends, Request, Response
 
 from auth_jwt.decorators import login_required
-from general_services.login_svc import LoginSvc
+from login_app.services.login_svc import LoginSvc
 from general_services.redis_svc import RedisSvc
 from login_app.dto import LoginUserDto
 from models import User

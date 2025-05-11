@@ -12,3 +12,7 @@ class TokenTypeEnum(BaseEnum):
     ACCESS = "access_token"
     REFRESH = "refresh_token"
 
+class PaymentTypeEnum(BaseEnum):
+    CREDIT_CART = "credit_card"
+    CASH = "cash"
+
