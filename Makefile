@@ -95,11 +95,15 @@ history:  ## show list history of migrations
 heads: ## show head migration
 	docker compose exec app /bin/bash -c "aerich heads"
 
+init-enums: ## create records in db by enums
+	docker exec -it app python scripts/init_enums.py
+
 create: ## build infrastructure on first run app
 	make rebuild
 	make clear-db
 	make init-migrations
 	make migrate
+	make init-enums
 	make ps
 
 
