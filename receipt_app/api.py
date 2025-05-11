@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from fastapi import Request, HTTPException
 from tortoise.transactions import in_transaction
 
@@ -23,7 +25,7 @@ class ReceiptApi:
         ]
 
         payment_type = await PaymentType.get(name=data.payment.type)
-        receipt = Receipt(user=user, payment_type=payment_type)
+        receipt = Receipt(user=user, amount=data.payment.amount, payment_type=payment_type)
 
         async with in_transaction() as connection:
             await receipt.save(using_db=connection)
@@ -45,4 +47,36 @@ class ReceiptApi:
             total=round(total, 2),
             rest=round(rest, 2),
             created_at=receipt.created_at,
+        )
+
+    @login_required
+    async def get_receipt_by_id(self, request: Request, receipt_id: int) -> ReceiptResponse:
+        user = request.state.user
+
+        receipt = await Receipt.filter(id=receipt_id, user=user).prefetch_related("products", "payment_type").first()
+        if not receipt:
+            raise HTTPException(status_code=404, detail="Receipt not found")
+
+        products = [
+            ProductOutput(
+                name=p.name,
+                price=p.price,
+                quantity=p.quantity,
+                total=round(p.price * p.quantity, 2)
+            )
+            for p in receipt.products   # related name in the model Product
+        ]
+        total = sum(p.total for p in products)
+        rest = max(Decimal(receipt.amount) - total, Decimal("0"))
+
+        return ReceiptResponse(
+            id=receipt.id,
+            products=products,
+            payment=PaymentOutput(
+                type=receipt.payment_type.name,
+                amount=receipt.amount,
+            ),
+            total=round(total, 2),
+            rest=round(rest, 2),
+            created_at=receipt.created_at
         )

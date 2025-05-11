@@ -6,3 +6,4 @@ api_router = APIRouter()
 receipt_api = ReceiptApi()
 
 api_router.add_api_route("/create-receipt", receipt_api.create_receipt, methods=["POST"])
+api_router.add_api_route("/get-receipt/{receipt_id}", receipt_api.get_receipt_by_id, methods=["GET"])
