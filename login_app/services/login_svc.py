@@ -4,8 +4,6 @@ import os
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.requests import Request
-
-from auth_jwt.decorators import login_required
 from auth_jwt.services.token_svc import TokenSvc
 from config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,

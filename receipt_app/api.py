@@ -1,7 +1,5 @@
 from datetime import datetime
-from decimal import Decimal
 from typing import List, Optional
-from fastapi.responses import PlainTextResponse
 
 from fastapi import Request, HTTPException, Query
 from tortoise.expressions import Q
@@ -57,7 +55,7 @@ class ReceiptApi:
     async def get_receipt_by_id(self, request: Request, receipt_id: int) -> ReceiptResponse:
         user = request.state.user
 
-        receipt = await Receipt.filter(id=receipt_id, user=user).prefetch_related("products", "payment_type").first()
+        receipt = await Receipt.get_or_none(id=receipt_id, user=user).prefetch_related("products", "payment_type")
         if not receipt:
             raise HTTPException(status_code=404, detail="Receipt not found")
 
@@ -189,4 +187,4 @@ class ReceiptApi:
         lines.append(date_str.center(line_width))
         lines.append("Дякуємо за покупку!".center(line_width))
 
-        return PlainTextResponse(content="\n".join(lines))
+        return "\n".join(lines)
