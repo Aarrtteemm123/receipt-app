@@ -153,35 +153,40 @@ class ReceiptApi:
         if not receipt:
             raise HTTPException(status_code=404, detail="Receipt not found")
 
-        def format_line(text: str, align: str = "left") -> str:
-            if align == "center":
-                return text.center(line_width)
-            elif align == "right":
-                return text.rjust(line_width)
-            return text.ljust(line_width)
+        header = "     ФОП Джонсонюк Борис     ".center(line_width)
+        separator = "=" * line_width
+        sub_separator = "-" * line_width
+        lines = [header, separator]
 
-        def format_money(value: Decimal) -> str:
-            return f"{value:,.2f}".replace(",", " ")
+        for product in receipt.products:
+            quantity = float(product.quantity)
+            price = float(product.price)
+            total = round(quantity * price, 2)
 
-        lines = []
-        lines.append(format_line("ФОП Джонсонюк Борис", "center"))
-        lines.append("=" * line_width)
+            lines.append(f"{quantity:.2f} x {price:,.2f}".replace(",", " "))
 
-        total = Decimal("0.00")
-        for p in receipt.products:
-            subtotal = Decimal(p.price * p.quantity)
-            total += subtotal
-            lines.append(f"{p.quantity:.2f} x {format_money(p.price)}")
-            lines.append(format_line(p.name, "left") + format_money(subtotal).rjust(line_width - len(p.name)))
-            lines.append("-" * line_width)
+            name = product.name
+            total_str = f"{total:,.2f}".replace(",", " ")
+            spacing = line_width - len(name) - len(total_str)
+            lines.append(f"{name}{' ' * spacing}{total_str}")
+            lines.append(sub_separator)
 
-        lines.append("=" * line_width)
-        lines.append(format_line("СУМА" + format_money(total).rjust(line_width - 4)))
-        lines.append(format_line(receipt.payment_type.name.capitalize() + format_money(total).rjust(line_width - len(receipt.payment_type.name))))
-        rest = Decimal(receipt.amount) - total
-        lines.append(format_line("Решта" + format_money(rest).rjust(line_width - 5)))
-        lines.append("=" * line_width)
-        lines.append(format_line(receipt.created_at.strftime("%d.%m.%Y %H:%M"), "center"))
-        lines.append(format_line("Дякуємо за покупку!", "center"))
+        total = sum(float(p.quantity) * float(p.price) for p in receipt.products)
+        amount = float(receipt.amount)
+        rest = max(amount - total, 0.0)
+
+        total_str = f"{total:,.2f}".replace(",", " ")
+        amount_str = f"{amount:,.2f}".replace(",", " ")
+        rest_str = f"{rest:,.2f}".replace(",", " ")
+
+        lines.append(separator)
+        lines.append(f"СУМА{' ' * (line_width - 4 - len(total_str))}{total_str}")
+        lines.append(f"{receipt.payment_type.name.capitalize()}{' ' * (line_width - len(receipt.payment_type.name) - len(amount_str))}{amount_str}")
+        lines.append(f"Решта{' ' * (line_width - 5 - len(rest_str))}{rest_str}")
+        lines.append(separator)
+
+        date_str = receipt.created_at.strftime("%d.%m.%Y %H:%M")
+        lines.append(date_str.center(line_width))
+        lines.append("Дякуємо за покупку!".center(line_width))
 
         return PlainTextResponse(content="\n".join(lines))
