@@ -18,7 +18,7 @@ mkdir receipt && cd receipt
 ### 2. Clone repositories
 
 ```bash
-git clone https://github.com/receipt-app.git
+git clone https://github.com/Aarrtteemm123/receipt-app.git
 ```
 
 ### 3. Prepare environment
