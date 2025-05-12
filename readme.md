@@ -24,7 +24,7 @@ git clone https://github.com/Aarrtteemm123/receipt-app.git
 ### 3. Prepare environment
 
 ```bash
-cd check-app
+cd receipt-app
 cp .env-example .env
 ```
 
