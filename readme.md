@@ -28,10 +28,18 @@ cd check-app
 cp .env-example .env
 ```
 
+Recommend set ACCESS_TOKEN_EXPIRE_MINUTES=50 for check project
+
 ### 4. Initialize project
 
 ```bash
 make create
+```
+
+### 5. Run tests
+
+```bash
+make run-tests
 ```
 
 ### 🔐 Access URLs
