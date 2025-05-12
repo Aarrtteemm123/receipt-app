@@ -38,6 +38,7 @@ make create
 
 * **App**: [http://localhost:8000/healthcheck](http://localhost:8000/healthcheck)
 * **Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* **Docs 2**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ---
 
