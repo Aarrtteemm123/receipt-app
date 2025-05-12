@@ -15,7 +15,7 @@
 mkdir receipt && cd receipt
 ```
 
-### 2. Clone repositories
+### 2. Clone repository
 
 ```bash
 git clone https://github.com/Aarrtteemm123/receipt-app.git
