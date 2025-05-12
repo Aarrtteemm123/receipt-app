@@ -1,4 +1,4 @@
-from fastapi import Request, Response
+from fastapi import Request, Response, HTTPException
 
 from auth_jwt.decorators import login_required
 from apps.login_app.services.login_svc import LoginSvc
@@ -17,6 +17,9 @@ class LoginApi:
         return response
 
     async def register(self, request: Request, data: NewUserDto):
+        is_exist = await User.filter(username=data.username).exists()
+        if is_exist:
+            raise HTTPException(status_code=400, detail="Username already exists")
         user = User(**data.model_dump(exclude=["password"]))
         user.set_password(data.password)
         await user.save()
